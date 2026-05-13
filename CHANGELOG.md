@@ -8,3 +8,5 @@ All notable changes to this project are documented here.
 
 - **2026-05-12**: style: format code according to style conventions and lint rules
 
+- **2026-05-13**: docs: document API schema, sample payloads, and parameters
+

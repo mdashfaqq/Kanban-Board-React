@@ -16,3 +16,5 @@ All notable changes to this project are documented here.
 
 - **2026-05-21**: docs: clarify setup steps and environment configuration in README
 
+- **2026-05-22**: test: add unit test assertions for edge cases and input validation
+

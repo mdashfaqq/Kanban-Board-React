@@ -20,3 +20,5 @@ All notable changes to this project are documented here.
 
 - **2026-05-29**: docs: add architectural overview notes and component flow details
 
+- **2026-06-20**: test: expand test coverage for error responses and status codes
+

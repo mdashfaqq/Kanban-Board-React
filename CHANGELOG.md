@@ -24,3 +24,5 @@ All notable changes to this project are documented here.
 
 - **2026-06-27**: perf: improve response latency and optimize inner execution loops
 
+- **2026-06-27**: refactor: modularize helper functions and improve code readability
+

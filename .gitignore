@@ -1,3 +1,7 @@
 node_modules/
 dist/
 .env
+
+# Local env files (contain project keys)
+.env.local
+.env.*.local

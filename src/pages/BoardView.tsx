@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getBoard, getBoardFullData, createCard, moveCard, deleteCard, type Board, type Card } from '../services/board'
-import { analyzeBoard, optimizeWorkflow, generateCardsFromObjective } from '../services/ai'
+import { runBoardCommand, generateCardsFromObjective, AI_COSTS } from '../services/ai'
 import { getErrorMessage } from '../lib/errors'
 import { useAuth } from '../lib/auth'
 import { useToast } from '../components/Toaster'
@@ -125,19 +125,12 @@ export default function BoardView({ user }: BoardViewProps) {
     }
   }
 
-  async function handleAICommand(command: string, _params?: any) {
-    const boardData = { columns, cardsByColumn }
-    if (command === 'analyze') {
-      return withBalanceRefresh(() => analyzeBoard(boardData, board!.workspace_id))
-    }
-    if (command === 'optimize') {
-      return withBalanceRefresh(() => optimizeWorkflow(boardData, board!.workspace_id))
-    }
-    return { message: 'Command not implemented yet' }
+  async function handleAICommand(command: string, params?: { naturalLanguage?: string }) {
+    return withBalanceRefresh(() => runBoardCommand(command, board!.id, params?.naturalLanguage))
   }
 
   async function handleGenerateCards(objective: string) {
-    return withBalanceRefresh(() => generateCardsFromObjective(objective, board!.workspace_id))
+    return withBalanceRefresh(() => generateCardsFromObjective(objective, board!.id))
   }
 
   async function handleCreateGeneratedCards(cards: any[]) {
@@ -242,7 +235,7 @@ export default function BoardView({ user }: BoardViewProps) {
                 onGenerate={handleGenerateCards}
                 onCreateCards={handleCreateGeneratedCards}
                 kbTokenBalance={user.kb_token_balance}
-                cost={5}
+                cost={AI_COSTS.generate_cards}
               />
             </div>
           )}

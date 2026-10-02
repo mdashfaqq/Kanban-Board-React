@@ -146,9 +146,38 @@ Access is based on `workspace_members.role`:
 - `activity_logs` are written by a trigger on `cards`; clients can only read them.
 - Users can update their `full_name` / `avatar_url`, but **not** `kb_token_balance`.
 
+## 🤖 AI with Hugging Face
+
+AI runs in the `ai` Supabase Edge Function (`supabase/functions/ai/`), never in
+the browser, so your Hugging Face token stays secret and users can't get AI
+results without being charged.
+
+1. Create a token at https://huggingface.co/settings/tokens — **Fine-grained**,
+   with **"Make calls to Inference Providers"** enabled.
+2. Deploy the function and set the secrets:
+
+   ```bash
+   npx supabase login
+   npx supabase secrets set HF_TOKEN=hf_your_token --project-ref <your-project-ref>
+   npx supabase functions deploy ai --project-ref <your-project-ref>
+   ```
+
+   Optional: choose a different chat model (any model available on HF Inference Providers):
+
+   ```bash
+   npx supabase secrets set HF_MODEL=Qwen/Qwen2.5-72B-Instruct --project-ref <your-project-ref>
+   ```
+
+   Default: `meta-llama/Llama-3.1-8B-Instruct`.
+3. Run `supabase/migrations/003_ai_focus_cost.sql` in the SQL Editor.
+
+The function verifies the user, loads the board through RLS, calls the model,
+validates its JSON, and only then calls `charge_ai_operation`. If the model
+fails, nothing is charged. Logs: **Dashboard → Edge Functions → ai → Logs**.
+
 ## 🪙 How kb_token accounting works
 
-1. The client checks the balance and runs the AI operation.
+1. The `ai` Edge Function checks the balance and runs the model on Hugging Face.
 2. **Only if it succeeds**, it calls the `charge_ai_operation(operation, workspace_id, metadata)` RPC, which in one transaction:
    - looks up the price on the server (`ai_operation_cost`) — the client can't choose it
    - locks the user row, rejects the charge if the balance is too low

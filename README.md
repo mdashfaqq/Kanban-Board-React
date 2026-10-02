@@ -4,6 +4,8 @@
 
 A production-quality, AI-powered Personal + Team Kanban platform with Flow Intelligence.
 
+**🌐 Live demo:** https://kanban-board-react-bo2s.onrender.com/
+
 ## 🎯 Product Vision
 
 FlowKanban is not just "a Kanban board with a chatbot." It's a hybrid Kanban platform with AI-powered workflow intelligence that:
